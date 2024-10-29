@@ -3,7 +3,7 @@
 header('Content-Type: application/json');
 
 // Incluye el archivo de conexión
-require 'connect.php';
+require 'conect.php';
 
 // Obtiene la tabla solicitada del parámetro GET
 $table = isset($_GET['table']) ? $_GET['table'] : 'country';
