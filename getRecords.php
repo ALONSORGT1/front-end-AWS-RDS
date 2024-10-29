@@ -7,7 +7,7 @@ require 'conect.php';
 
 // Obtiene la tabla solicitada del parámetro GET
 $table = isset($_GET['table']) ? $_GET['table'] : 'country';
-$offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0; // Por defecto el offset es 0
+//$offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0; // Por defecto el offset es 0
 
 // Validar si la tabla es una de las permitidas
 $allowedTables = ['city', 'country', 'countrylanguage'];
