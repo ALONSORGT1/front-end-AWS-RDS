@@ -1,6 +1,6 @@
 // Función para obtener registros de una tabla específica
 function getRecords(table) {
-    axios.get(`http://3.89.184.121/php-intro-connection/getRecords.php?table=${table}`)
+    axios.get(`http://54.90.71.235/php-intro-connection/getRecords.php?table=${table}`)
       .then(function(response) {
         const thead = document.getElementById('tableHead');
         const tbody = document.getElementById('records');
