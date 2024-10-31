@@ -1,13 +1,19 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
+
 // getRecords.php
 header('Content-Type: application/json');
 
 // Incluye el archivo de conexión
-require 'conect.php';
+require 'connect.php';
+
+
 
 // Obtiene la tabla solicitada del parámetro GET
 $table = isset($_GET['table']) ? $_GET['table'] : 'country';
-//$offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0; // Por defecto el offset es 0
+$offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0; // Por defecto el offset es 0
 
 // Validar si la tabla es una de las permitidas
 $allowedTables = ['city', 'country', 'countrylanguage'];
