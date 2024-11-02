@@ -37,6 +37,6 @@ try {
     // En caso de error, devuelve un mensaje en JSON
     echo json_encode(['error' => $e->getMessage()]);
 }
-    echo json_encode(['count' => count($records), 'data' => $records]);
+
 
 ?>
