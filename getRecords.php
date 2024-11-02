@@ -24,8 +24,8 @@ if (!in_array($table, $allowedTables)) {
 }
 
 try {
-    // Prepara la consulta SQL con un límite de 15 registros
-    $stmt = $conn->query("SELECT * FROM $table LIMIT 15 OFFSET $offset");
+    // Prepara la consulta SQL con un límite de 30 registros
+    $stmt = $conn->query("SELECT * FROM $table LIMIT 30 OFFSET $offset");
 
     // Obtén todos los registros como un arreglo asociativo
     $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
