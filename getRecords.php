@@ -25,10 +25,11 @@ if (!in_array($table, $allowedTables)) {
 
 try {
     // Prepara la consulta SQL con un límite de 30 registros
-    $stmt = $conn->query("SELECT * FROM $table LIMIT 30 OFFSET $offset");
+    //$stmt = $conn->query("SELECT * FROM $table LIMIT 40 OFFSET $offset");
 
     // Obtén todos los registros como un arreglo asociativo
-    $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    //$records = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $records = fetchAll(PDO::FETCH_ASSOC);
 
     // Devuelve los registros en formato JSON
     echo json_encode($records);
