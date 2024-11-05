@@ -1,5 +1,5 @@
 <?php
-  include ('conect.php');
+  include ('connect.php');
 
   // Llamar al procedimiento almacenado
   $sql = "CALL GetAllCountries()";
