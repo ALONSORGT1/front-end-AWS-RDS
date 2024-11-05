@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Botón para la búsqueda por continente
     document.getElementById('continentSearchBtn').addEventListener('click', () => {
-        fetch('index.php')
+        fetch('//3.87.248.147/php-intro-connection/index.php/')
             .then(response => response.json())
             .then(location => {
-                return fetch(`getRecords.php?table=city&continent=${location.continent_name}`);
+                return fetch(`//3.87.248.147/php-intro-connection/getRecords.php?table=city&continent=${location.continent_name}`);
             })
             .then(response => response.json())
             .then(data => {
@@ -18,10 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Botón para la búsqueda por país
     document.getElementById('countrySearchBtn').addEventListener('click', () => {
-        fetch('index.php')
+        fetch('../index.php')
             .then(response => response.json())
             .then(location => {
-                return fetch(`getRecords.php?table=city&country=${location.country_name}`);
+                return fetch(`//3.87.248.147/php-intro-connection/getRecords.php?table=city&country=${location.country_name}`);
             })
             .then(response => response.json())
             .then(data => {
