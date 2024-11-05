@@ -2,42 +2,36 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
-
-// getRecords.php
 header('Content-Type: application/json');
 
-// Incluye el archivo de conexión
 require 'connect.php';
+$table = $_GET['table'] ?? null;
+$continent = $_GET['continent'] ?? null;
+$country = $_GET['country'] ?? null;
 
-
-
-// Obtiene la tabla solicitada del parámetro GET
-$table = isset($_GET['table']) ? $_GET['table'] : 'country';
-$offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0; // Por defecto el offset es 0
-
-// Validar si la tabla es una de las permitidas
-$allowedTables = ['city', 'country', 'countrylanguage'];
-
-if (!in_array($table, $allowedTables)) {
-    echo json_encode(['error' => 'Tabla no permitida']);
+if (!$table) {
+    echo json_encode(['error' => 'Table parameter is missing']);
     exit;
 }
 
 try {
-    // Prepara la consulta SQL con un límite de 30 registros
-    //$stmt = $conn->query("SELECT * FROM $table LIMIT 40 OFFSET $offset");
+    if ($continent) {
+        // Consulta por continente en la tabla `country`
+        $stmt = $pdo->prepare("SELECT * FROM country WHERE Continent = :continent");
+        $stmt->bindParam(':continent', $continent);
+    } elseif ($country) {
+        // Consulta por país en la tabla `city` usando `CountryCode`
+        $stmt = $pdo->prepare("SELECT * FROM city WHERE CountryCode = (SELECT Code FROM country WHERE Name = :country)");
+        $stmt->bindParam(':country', $country);
+    } else {
+        echo json_encode(['error' => 'Continent or country parameter is missing']);
+        exit;
+    }
 
-    // Obtén todos los registros como un arreglo asociativo
-    //$records = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $records = fetchAll(PDO::FETCH_ASSOC);
-
-    // Devuelve los registros en formato JSON
-    echo json_encode($records);
+    $stmt->execute();
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    echo json_encode($results);
 
 } catch (PDOException $e) {
-    // En caso de error, devuelve un mensaje en JSON
-    echo json_encode(['error' => $e->getMessage()]);
+    echo json_encode(['error' => 'Query failed: ' . $e->getMessage()]);
 }
-
-
-?>
