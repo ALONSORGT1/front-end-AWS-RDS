@@ -4,29 +4,33 @@ require_once 'IpService.php';
 
 $ipService = new IpService();
 header('Content-Type: application/json');
-//echo $ipService->getIPSingle();
 
- $apiKey = "a9343f00f26d4e7a89a76b7dda0b0a53";
-    $ip = $ipService->getIPSingle();
-    $location = get_geolocation($apiKey, $ip);
-    $decodedLocation = json_decode($location, true);
-    
-   
-    echo ($location);
- 
+$apiKey = "a9343f00f26d4e7a89a76b7dda0b0a53";
+$ip = $ipService->getIPSingle();
+$location = get_geolocation($apiKey, $ip);
+$decodedLocation = json_decode($location, true);
 
-    function get_geolocation($apiKey, $ip, $lang = "en", $fields = "*", $excludes = "") {
-        $url = "https://api.ipgeolocation.io/ipgeo?apiKey=".$apiKey."&ip=".$ip."&lang=".$lang."&fields=".$fields."&excludes=".$excludes;
-        $cURL = curl_init();
+$response = [
+    "continent_name" => $decodedLocation['continent_name'] ?? null,
+    "country_name" => $decodedLocation['country_name'] ?? null
+];
 
-        curl_setopt($cURL, CURLOPT_URL, $url);
-        curl_setopt($cURL, CURLOPT_HTTPGET, true);
-        curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($cURL, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json',
-            'Accept: application/json',
-            'User-Agent: '.$_SERVER['HTTP_USER_AGENT']
-        ));
+echo json_encode($response);
 
-        return curl_exec($cURL); 
-    }
+function get_geolocation($apiKey, $ip, $lang = "en", $fields = "*", $excludes = "") {
+    $url = "https://api.ipgeolocation.io/ipgeo?apiKey=".$apiKey."&ip=".$ip."&lang=".$lang."&fields=".$fields."&excludes=".$excludes;
+    $cURL = curl_init();
+
+    curl_setopt($cURL, CURLOPT_URL, $url);
+    curl_setopt($cURL, CURLOPT_HTTPGET, true);
+    curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($cURL, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Accept: application/json',
+        'User-Agent: ' . $_SERVER['HTTP_USER_AGENT']
+    ]);
+
+    $result = curl_exec($cURL);
+    curl_close($cURL);
+    return $result;
+}
