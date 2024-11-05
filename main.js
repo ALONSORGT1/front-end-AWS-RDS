@@ -1,78 +1,75 @@
-// Función para obtener registros de una tabla específica
-function getRecords(table) {
-    axios.get(`//3.85.84.104/php-intro-connection/getRecords.php?table=${table}`)
-      .then(function(response) {
-        const thead = document.getElementById('tableHead');
-        const tbody = document.getElementById('records');
-        tbody.innerHTML = ''; // Limpiar la tabla
-  
-        if (table === 'city') {
-          thead.innerHTML = `
-            <tr>
-              <th scope="col">ID</th>
-              <th scope="col">Nombre</th>
-              <th scope="col">Código de País</th>
-              <th scope="col">Distrito</th>
-              <th scope="col">Población</th>
-            </tr>`;
-          response.data.forEach(record => {
-            const row = `<tr>
-                          <td>${record.ID}</td>
-                          <td>${record.Name}</td>
-                          <td>${record.CountryCode}</td>
-                          <td>${record.District}</td>
-                          <td>${record.Population}</td>
-                        </tr>`;
-            tbody.innerHTML += row;
-          });
-        } else if (table === 'country') {
-          thead.innerHTML = `
-            <tr>
-              <th scope="col">Código</th>
-              <th scope="col">Nombre</th>
-              <th scope="col">Continente</th>
-              <th scope="col">Región</th>
-              <th scope="col">Población</th>
-            </tr>`;
-          response.data.forEach(record => {
-            const row = `<tr>
-                          <td>${record.Code}</td>
-                          <td>${record.Name}</td>
-                          <td>${record.Continent}</td>
-                          <td>${record.Region}</td>
-                          <td>${record.Population}</td>
-                        </tr>`;
-            tbody.innerHTML += row;
-          });
-        } else if (table === 'countrylanguage') {
-          thead.innerHTML = `
-            <tr>
-              <th scope="col">Código de País</th>
-              <th scope="col">Idioma</th>
-              <th scope="col">Es Oficial</th>
-              <th scope="col">Porcentaje</th>
-            </tr>`;
-          response.data.forEach(record => {
-            const row = `<tr>
-                          <td>${record.CountryCode}</td>
-                          <td>${record.Language}</td>
-                          <td>${record.IsOfficial}</td>
-                          <td>${record.Percentage}</td>
-                        </tr>`;
-            tbody.innerHTML += row;
-          });
+document.addEventListener('DOMContentLoaded', () => {
+    // Botón para la búsqueda por continente
+    document.getElementById('continentSearchBtn').addEventListener('click', () => {
+        fetch('index.php')
+            .then(response => response.json())
+            .then(location => {
+                return fetch(`getRecords.php?table=city&continent=${location.continent_name}`);
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Resultados por continente:', data);
+                displayResults(data);
+            })
+            .catch(error => {
+                console.error('Error en la búsqueda por continente:', error);
+            });
+    });
+
+    // Botón para la búsqueda por país
+    document.getElementById('countrySearchBtn').addEventListener('click', () => {
+        fetch('index.php')
+            .then(response => response.json())
+            .then(location => {
+                return fetch(`getRecords.php?table=city&country=${location.country_name}`);
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Resultados por país:', data);
+                displayResults(data);
+            })
+            .catch(error => {
+                console.error('Error en la búsqueda por país:', error);
+            });
+    });
+
+    // Función para mostrar los resultados en la tabla
+    function displayResults(data) {
+        const tableHeader = document.getElementById('tableHeader');
+        const tableBody = document.getElementById('tableBody');
+
+        // Limpiar la tabla
+        tableHeader.innerHTML = '';
+        tableBody.innerHTML = '';
+
+        if (data.length > 0) {
+            // Crear encabezados de la tabla
+            const headers = Object.keys(data[0]);
+            headers.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header.charAt(0).toUpperCase() + header.slice(1);
+                tableHeader.appendChild(th);
+            });
+
+            // Crear filas de la tabla
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                headers.forEach(header => {
+                    const td = document.createElement('td');
+                    td.textContent = row[header];
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+        } else {
+            // Mostrar mensaje si no hay resultados
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            td.colSpan = headers.length;
+            td.textContent = 'No se encontraron resultados.';
+            td.classList.add('text-center');
+            tr.appendChild(td);
+            tableBody.appendChild(tr);
         }
-      })
-      .catch(function(error) {
-        console.error('Error al obtener los registros:', error);
-      });
-  }
-  
-  // Asignar el evento change al menú desplegable
-  document.getElementById('actionSelect').addEventListener('change', function() {
-    const selectedTable = this.value;
-  
-    // Ejecutar la consulta correspondiente según la tabla seleccionada
-    getRecords(selectedTable);
-  });
-  
+    }
+});
